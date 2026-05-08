@@ -33,7 +33,9 @@ def sharpe(returns, rf=0.0, periods=TRADING_DAYS_PER_YEAR):
     return np.sqrt(periods) * er / std
 
 def sortino(returns, rf=0.0, periods=TRADING_DAYS_PER_YEAR):
-    """Sharpe but only penalises downside deviation."""
+    """
+    Sharpe but only penalises downside deviation.
+    """
     er = returns.mean() - rf / periods
     downside = returns[returns < 0].std()
     if downside == 0:
@@ -48,7 +50,9 @@ def max_drawdown(returns):
     return (_equity / _equity.cummax() - 1).min()
 
 def max_drawdown_duration(returns):
-    """Number of calendar days in the longest drawdown period."""
+    """
+    Number of calendar days in the longest drawdown period.
+    """
     _equity = equity(returns)
     roll_max = _equity.cummax()
     underwater = _equity < roll_max
@@ -64,14 +68,18 @@ def max_drawdown_duration(returns):
     return max_dur
 
 def calmar(returns, periods=TRADING_DAYS_PER_YEAR):
-    """Annualised return divided by absolute max drawdown."""
+    """
+    Annualised return divided by absolute max drawdown.
+    """
     mdd = max_drawdown(returns)
     if mdd == 0:
         return np.nan
     return annualized_return(returns, periods) / abs(mdd)
 
 def win_rate(returns):
-    """Fraction of periods with a positive return."""
+    """
+    Fraction of periods with a positive return.
+    """
     valid = returns.dropna()
     if len(valid) == 0:
         return np.nan
@@ -86,7 +94,9 @@ def avg_loss(returns):
     return losses.mean() if len(losses) > 0 else np.nan
 
 def profit_factor(returns):
-    """Gross profit / gross loss (absolute)."""
+    """
+    Gross profit / gross loss (absolute).
+    """
     gross_win = returns[returns > 0].sum()
     gross_loss = returns[returns < 0].sum()
     if gross_loss == 0:
@@ -97,15 +107,21 @@ def skewness(returns):
     return returns.skew()
 
 def kurtosis(returns):
-    """Excess kurtosis (normal distribution = 0)."""
+    """
+    Excess kurtosis (normal distribution = 0).
+    """
     return returns.kurtosis()
 
 def value_at_risk(returns, confidence=0.95):
-    """Historical VaR — worst loss at the given confidence level."""
+    """
+    Historical VaR — worst loss at the given confidence level.
+    """
     return returns.quantile(1 - confidence)
 
 def conditional_var(returns, confidence=0.95):
-    """Expected Shortfall (CVaR) — average return below the VaR threshold."""
+    """
+    Expected Shortfall (CVaR) — average return below the VaR threshold.
+    """
     threshold = value_at_risk(returns, confidence)
     tail = returns[returns <= threshold]
     return tail.mean() if len(tail) > 0 else np.nan
