@@ -24,10 +24,10 @@ class Backtest:
         gross_exposure = positions.shift(1).abs()
         if hasattr(gross_exposure, 'columns'):
             gross_exposure = gross_exposure.sum(axis=1)
-        
+
         ret = (pnl - costs) / gross_exposure
         ret = ret.replace([np.inf, -np.inf], np.nan).fillna(0)
-        self.results = PerformanceStats(ret)
+        self.results = PerformanceStats(ret, turnover=costs)
     
     def plot(self):
         plot_equity(self.results.ret, title=self.strategy.name)
