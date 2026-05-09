@@ -16,10 +16,10 @@ class Backtest:
         if hasattr(pnl, 'columns'):
             pnl = pnl.sum(axis=1)
         
-        costs = positions.diff().abs()
-        if hasattr(costs, 'columns'):
-            costs = costs.sum(axis=1)
-        costs = costs * self.transaction_cost
+        turnover = positions.diff().abs()
+        if hasattr(turnover, 'columns'):
+            turnover = turnover.sum(axis=1)
+        costs = turnover * self.transaction_cost
 
         gross_exposure = positions.shift(1).abs()
         if hasattr(gross_exposure, 'columns'):
@@ -27,7 +27,7 @@ class Backtest:
 
         ret = (pnl - costs) / gross_exposure
         ret = ret.replace([np.inf, -np.inf], np.nan).fillna(0)
-        self.results = PerformanceStats(ret, turnover=costs)
+        self.results = PerformanceStats(ret, turnover=turnover)
     
     def plot(self):
         plot_equity(self.results.ret, title=self.strategy.name)
