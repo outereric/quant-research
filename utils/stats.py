@@ -26,7 +26,17 @@ def hurst(series, max_lag=100):
     return slope / 2
 
 def half_life(series):
-    ...
+    series = np.asarray(series)
+    series = series[np.isfinite(series)]
+    lag = series[:-1]
+    delta = series[1:] - series[:-1]
+
+    slope, intercept = np.polyfit(lag, delta, 1)
+
+    if slope >= 0:
+        return np.nan
+
+    return -np.log(2) / np.log(1 + slope)
 
 def johansen_test(prices):
     ...
