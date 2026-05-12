@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.vector_ar.vecm import coint_johansen
 
 def adf_test(series):
     result = adfuller(series, regression="c", autolag="AIC")
@@ -39,4 +40,9 @@ def half_life(series):
     return -np.log(2) / np.log(1 + slope)
 
 def johansen_test(prices):
-    ...
+    result = coint_johansen(prices, det_order=0, k_ar_diff=1)
+    return ({
+        "trace_stat": result.lr1[0],        # test statistic for rank=0
+        "critical_values": result.cvt[0], # critical values
+        "cointegrating_vector": result.evec[:, 0], # hedge ratio
+    })
