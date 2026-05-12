@@ -10,8 +10,20 @@ def adf_test(series):
         "critical_values": result[4], 
     })
 
-def hurst(series):
-    ...
+def hurst(series, max_lag=100):
+    series = np.asarray(series, float)
+    series = series[np.isfinite(series)]
+
+    lags = np.arange(2, max_lag)
+    tau = []
+
+    for lag in lags:
+        diff = series[lag:] - series[:-lag]
+        tau.append(np.var(diff))
+    
+    tau = np.asarray(tau)
+    slope, intercept = np.polyfit(np.log(lags), np.log(tau), 1)
+    return slope / 2
 
 def half_life(series):
     ...
