@@ -8,7 +8,7 @@ def adf_test(series):
     return ({
         "statistic": result[0],
         "p_value": result[1],
-        "critical_values": result[4], 
+        "critical_values": result[4], # critical values [90%, 95%, 99%]
     })
 
 def hurst(series, max_lag=100):
@@ -43,6 +43,6 @@ def johansen_test(prices):
     result = coint_johansen(prices, det_order=0, k_ar_diff=1)
     return ({
         "trace_stat": result.lr1[0],        # test statistic for rank=0
-        "critical_values": result.cvt[0], # critical values
+        "critical_values": result.cvt[0], # critical values [90%, 95%, 99%]
         "cointegrating_vector": result.evec[:, 0], # hedge ratio
     })
